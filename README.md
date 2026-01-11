@@ -133,7 +133,7 @@ The following images illustrate the system's ability to localize and classify de
 
 Help you write a `.gitignore` file to ensure the 147MB model file doesn't accidentally get included in your next `git push`?
 
-![Output 1](images/checked_00041000_temp.png)
-![Output 2](images/checked_00041000_test.png)
-![Output 3](images/checked_00041001_test.png)
-![Output 3](images/checked_00041002_temp.png)
+![Output 1](images/checked_00041000_temp.jpg)
+![Output 2](images/checked_00041000_test.jpg)
+![Output 3](images/checked_00041001_test.jpg)
+![Output 3](images/checked_00041002_temp.jpg)
