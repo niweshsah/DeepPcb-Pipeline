@@ -123,17 +123,17 @@ Result: FAIL - 2 defects found.
 Saved to: results/checked_00041000_test.jpg
 
 ```
+## Annotated Visual Samples
 
-**Annotated Visual Samples:**
-The following images illustrate the system's ability to localize and classify defects:
+The following visual examples demonstrate the system’s capability to **detect, localize, and classify PCB defects**.  
+Each image highlights identified defect regions along with their predicted categories and confidence indicators.
 
 ---
 
-### Would you like me to...
+![Annotated PCB Sample 1](images/checked_00041000_temp.jpg)
 
-Help you write a `.gitignore` file to ensure the 147MB model file doesn't accidentally get included in your next `git push`?
+![Annotated PCB Sample 2](images/checked_00041000_test.jpg)
 
-![Output 1](images/checked_00041000_temp.jpg)
-![Output 2](images/checked_00041000_test.jpg)
-![Output 3](images/checked_00041001_test.jpg)
-![Output 3](images/checked_00041002_temp.jpg)
+![Annotated PCB Sample 3](images/checked_00041001_test.jpg)
+
+![Annotated PCB Sample 4](images/checked_00041002_temp.jpg)
