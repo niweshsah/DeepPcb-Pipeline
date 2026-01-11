@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-This repository contains the solution for **Question 2: Automated Quality Inspection System for Manufacturing**. The project implements a computer vision-based quality assurance tool designed to detect, classify, and assess defects on Printed Circuit Boards (PCBs).
+The project implements a computer vision-based quality assurance tool designed to detect, classify, and assess defects on Printed Circuit Boards (PCBs).
 
 Using a fine-tuned YOLOv8 model, the system analyzes images of bare PCBs to identify common manufacturing faults such as open circuits, shorts, mousebites, and spurs. The system automatically localizes these defects, assigns a severity level based on industry standards, and generates annotated visual reports.
 
