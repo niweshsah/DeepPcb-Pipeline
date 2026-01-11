@@ -10,73 +10,72 @@ Using a fine-tuned YOLOv8 model, the system analyzes images of bare PCBs to iden
 
 ## Features
 
-* **Automated Defect Detection:** Utilizes the YOLO (You Only Look Once) architecture for real-time inference on high-resolution PCB images.
+* **Automated Defect Detection:** Utilizes the YOLO architecture for real-time inference on high-resolution PCB images.
 * **Multi-Class Classification:** Capable of identifying multiple specific defect types including Open, Short, Mousebite, Spur, Copper, and Pin-hole.
 * **Dynamic Severity Assessment:** Implements logic to classify defect severity (CRITICAL, HIGH, MODERATE, LOW) based on the defect type and its relative surface area.
-* **Visual Annotation:** Outputs images with color-coded bounding boxes and labels for immediate visual verification by QA engineers.
-* **Batch Processing:** Supports processing individual image files or entire directories of test samples.
+* **Visual Annotation:** Outputs images with color-coded bounding boxes and labels for immediate visual verification.
 
 ## Directory Structure
 
 ```text
-folder/
-├── best_yolo_pcb.pt        # Fine-tuned YOLO weights for PCB defect detection
-├── environment.yml         # Conda environment configuration file
+.
 ├── quality_inspector.py    # Main inspection script
+├── environment.yml         # Conda environment configuration file
 ├── README.md               # Project documentation
 ├── test_images/            # Source directory for validation images
 │   ├── images/             # Raw test images
-│   └── labels/             # Ground truth labels (if applicable)
-└── results/                # Output directory for annotated images (generated at runtime)
+│   └── labels/             # Ground truth labels
+└── results/                # Output directory for annotated images
 
 ```
 
-## Installation
+*Note: The model weights file (`best_yolo_pcb.pt`) must be downloaded separately due to file size constraints.*
 
-### Prerequisites
+## Installation and Setup
 
-* Python 3.8 or higher
-* Ultralytics (YOLOv8)
-* OpenCV
-* NumPy
+### 1. Clone the Repository
 
-### Setup
+```bash
+git clone https://github.com/niweshsah/DeepPcb-Pipeline.git
+cd DeepPcb-Pipeline
 
-It is recommended to use a virtual environment. You can install the required dependencies using the provided `environment.yml` or via pip:
+```
+
+### 2. Install Dependencies
 
 ```bash
 pip install ultralytics opencv-python numpy
 
 ```
 
+### 3. Download Model Weights
+
+Because the trained model file exceeds GitHub's standard file size limit (100MB), it is hosted as a Release Asset.
+
+1. Navigate to the [Releases](https://www.google.com/search?q=https://github.com/niweshsah/DeepPcb-Pipeline/releases) page of this repository.
+2. Locate the latest release (e.g., `v1.0.0`).
+3. Download the `best_yolo_pcb.pt` file.
+4. Place the downloaded file directly into the root directory of this project.
+
 ## Usage
 
-The `quality_inspector.py` script serves as the main entry point. It accepts command-line arguments to specify the model path, input source, and output destination.
+The `quality_inspector.py` script accepts command-line arguments to specify the model path, input source, and output destination.
 
 ### Basic Execution
 
-To run the inspector on the default test image defined in the script:
+To run the inspector using the downloaded model and default test image:
 
 ```bash
-python quality_inspector.py
+python quality_inspector.py --model ./best_yolo_pcb.pt
 
 ```
 
 ### Batch Processing
 
-To inspect a directory of images (e.g., the provided `test_images/images` folder) and save results to a `results` folder:
+To inspect all images in the test directory:
 
 ```bash
-python quality_inspector.py --input ./test_images/images --output ./results
-
-```
-
-### Custom Model or Confidence Threshold
-
-To use a specific model weight or adjust the detection sensitivity:
-
-```bash
-python quality_inspector.py --model ./best_yolo_pcb.pt --conf 0.5
+python quality_inspector.py --model ./best_yolo_pcb.pt --input ./test_images/images --output ./results
 
 ```
 
@@ -84,36 +83,34 @@ python quality_inspector.py --model ./best_yolo_pcb.pt --conf 0.5
 
 | Argument | Type | Default | Description |
 | --- | --- | --- | --- |
-| `--model` | str | `./best_yolo_pcb.pt` | Path to the trained YOLO model weights. |
-| `--input` | str | `./test_images/images/...` | Path to a single image or a directory of images. |
-| `--output` | str | `results` | Directory where processed images will be saved. |
-| `--conf` | float | `0.45` | Confidence threshold for defect detection (0.0 - 1.0). |
+| `--model` | str | `./best_yolo_pcb.pt` | Path to the downloaded YOLO model weights. |
+| `--input` | str | `./test_images/images/...` | Path to an image or directory. |
+| `--output` | str | `results` | Directory to save annotated results. |
+| `--conf` | float | `0.45` | Confidence threshold (0.0 - 1.0). |
 
 ## Methodology
 
 ### 1. Defect Detection (YOLOv8)
 
-The core detection engine is based on the Ultralytics YOLOv8 architecture. The model `best_yolo_pcb.pt` has been trained on the DeepPCB dataset to recognize distinct visual anomalies on circuit boards.
+The core detection engine uses the YOLOv8 architecture fine-tuned on the DeepPCB dataset. It identifies distinct visual anomalies including geometric irregularities and connectivity issues.
 
 ### 2. Severity Logic
 
-The system goes beyond simple detection by calculating a severity score. This is defined in the `calculate_severity` method within the `DeepPCBInspector` class:
+Defect severity is calculated using the following criteria:
 
-* **CRITICAL:** Applied to functional failures such as **Open** circuits (broken connections) and **Short** circuits (unintended connections).
-* **HIGH:** Applied to structural defects like **Mousebites** and **Spurs** that may degrade signal integrity.
-* **MODERATE/LOW:** Applied to other cosmetic or minor defects. If a minor defect exceeds 1% of the total image area, it is elevated to Moderate; otherwise, it remains Low.
+* **CRITICAL:** Functional failures such as **Open** circuits or **Short** circuits.
+* **HIGH:** Structural defects like **Mousebites** and **Spurs**.
+* **MODERATE/LOW:** Cosmetic defects. If a minor defect exceeds 1% of the total image area, it is elevated to Moderate.
 
 ### 3. Localization and Annotation
 
-For every detected defect, the system extracts the bounding box coordinates . These coordinates are used to draw color-coded rectangles on the output image:
+Coordinates for each defect are extracted and rendered as color-coded bounding boxes:
 
 * **Red:** Critical Severity
 * **Orange:** High Severity
 * **Yellow/Cyan:** Moderate/Low Severity
 
-## Results
-
-Upon execution, the script reports the number of defects found per image in the console and saves the annotated images to the specified output directory.
+## Sample Results
 
 **Example Console Output:**
 
@@ -127,8 +124,14 @@ Saved to: results/checked_00041000_test.jpg
 
 ```
 
-**Example Visual Output:**
-The resulting images will contain bounding boxes clearly labeling the defect type (e.g., "OPEN [CRITICAL]") and its precise location on the PCB.
+**Annotated Visual Samples:**
+The following images illustrate the system's ability to localize and classify defects:
+
+---
+
+### Would you like me to...
+
+Help you write a `.gitignore` file to ensure the 147MB model file doesn't accidentally get included in your next `git push`?
 
 ![Output 1](images/checked_00041000_temp.png)
 ![Output 2](images/checked_00041000_test.png)
